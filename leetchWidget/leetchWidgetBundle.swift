@@ -2,8 +2,8 @@ import WidgetKit
 import SwiftUI
 
 @main
-struct leetchWidgetBundle: WidgetBundle {
+struct LeetchWidgetBundle: WidgetBundle {
     var body: some Widget {
-        leetchWidget()
+        LeetchWidget()
     }
 }

@@ -1,7 +1,7 @@
 import SwiftUI
 
 @main
-struct leetchApp: App {
+struct LeetchApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()

@@ -58,12 +58,12 @@ struct TCLProvider: TimelineProvider {
 
 // MARK: - Widget
 
-struct leetchWidget: Widget {
+struct LeetchWidget: Widget {
     let kind: String = "leetchWidget"
 
     var body: some WidgetConfiguration {
         StaticConfiguration(kind: kind, provider: TCLProvider()) { entry in
-            leetchWidgetView(entry: entry)
+            LeetchWidgetView(entry: entry)
                 .containerBackground(.fill.tertiary, for: .widget)
         }
         .configurationDisplayName("TCL Passages")

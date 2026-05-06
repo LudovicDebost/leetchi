@@ -3,7 +3,7 @@ import SwiftUI
 
 // MARK: - Entry View (dispatches by family)
 
-struct leetchWidgetView: View {
+struct LeetchWidgetView: View {
     var entry: TCLEntry
     @Environment(\.widgetFamily) var family
 
@@ -212,7 +212,7 @@ struct LargeDepartureRow: View {
 // MARK: - Previews
 
 #Preview("Small", as: .systemSmall) {
-    leetchWidget()
+    LeetchWidget()
 } timeline: {
     TCLEntry.placeholder
     TCLEntry(date: Date(), departures: [], configuration: .default, errorMessage: nil)
@@ -220,13 +220,13 @@ struct LargeDepartureRow: View {
 }
 
 #Preview("Medium", as: .systemMedium) {
-    leetchWidget()
+    LeetchWidget()
 } timeline: {
     TCLEntry.placeholder
 }
 
 #Preview("Large", as: .systemLarge) {
-    leetchWidget()
+    LeetchWidget()
 } timeline: {
     TCLEntry.placeholder
 }
