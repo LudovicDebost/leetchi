@@ -36,7 +36,6 @@ struct ConfigurationView: View {
                         .textInputAutocapitalization(.never)
 
                     SecureField("Mot de passe (optionnel)", text: $password)
-                        .keyboardType(.URL)
                         .autocorrectionDisabled()
                         .textInputAutocapitalization(.never)
                 }

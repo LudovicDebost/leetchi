@@ -1,6 +1,6 @@
 # Leetchi — Widget iOS TCL Lyon
 
-Application iOS avec widget WidgetKit affichant les **prochains passages TCL** (bus, tram, métro) de Lyon, en s'appuyant sur l'API [Litchi](https://github.com/vqlion/litchi).
+Application iOS avec widget WidgetKit affichant les **prochains passages TCL** (bus, tram, métro) de Lyon, en appelant directement l'API Datapusher du Grand Lyon.
 
 ![Schéma du widget](.github/widget-preview.png)
 
@@ -8,7 +8,7 @@ Application iOS avec widget WidgetKit affichant les **prochains passages TCL** (
 
 - **Widget homescreen** (petit, moyen, grand) affichant les prochains passages TCL en temps réel
 - **Application principale** avec vue liste complète et rafraîchissement manuel
-- **Configuration flexible** : URL du serveur Litchi, lignes et IDs d'arrêts personnalisables
+- **Configuration flexible** : URL Datapusher Grand Lyon, identifiants optionnels, lignes et IDs d'arrêts personnalisables
 - Rafraîchissement automatique du widget toutes les **5 minutes**
 
 ## Architecture
@@ -17,7 +17,7 @@ Application iOS avec widget WidgetKit affichant les **prochains passages TCL** (
 leetchi/
 ├── Shared/                          # Code partagé (app + widget)
 │   ├── TCLModels.swift              # Modèles de données & configuration
-│   └── TCLService.swift             # Service réseau (POST /refresh/tcl)
+│   └── TCLService.swift             # Service réseau (Datapusher Grand Lyon)
 │
 ├── leetchi/                         # Cible application iOS
 │   ├── leetchApp.swift
@@ -42,7 +42,8 @@ leetchi/
 
 - **Xcode 15+** (macOS 13 Ventura ou supérieur)
 - **iOS 17+** sur l'appareil ou simulateur cible
-- Une instance **Litchi** déployée (voir [vqlion/litchi](https://github.com/vqlion/litchi)) — ou utiliser `https://litchi.vqlion.fr`
+- Accès à l'API Datapusher Grand Lyon : `https://data.grandlyon.com/fr/datapusher/ws/rdata/`
+- Identifiants Grand Lyon (optionnels dans l'app, selon votre accès)
 - **XcodeGen** pour générer le `.xcodeproj` (recommandé) :
 
   ```sh
@@ -84,7 +85,9 @@ Au premier lancement, l'app utilise les valeurs par défaut :
 
 | Paramètre | Valeur par défaut |
 |-----------|------------------|
-| URL serveur | `https://litchi.vqlion.fr` |
+| URL base Datapusher | `https://data.grandlyon.com/fr/datapusher/ws/rdata/` |
+| Utilisateur | *(vide)* |
+| Mot de passe | *(vide)* |
 | Lignes | `C26,70` |
 | IDs d'arrêts | `2294,42561` |
 | Directions | *(toutes)* |
@@ -97,19 +100,18 @@ Les IDs sont disponibles sur le [portail data Grand Lyon](https://data.grandlyon
 
 > ⚠️ Un ID d'arrêt est lié à **une direction** (un quai). Pour afficher les deux sens, il faut les deux IDs de quai (ex. `30101` et `30459` pour Perrache ligne A).
 
-## API Litchi utilisée
+## API Datapusher Grand Lyon utilisée
 
-Le widget effectue un `POST /refresh/tcl` avec le corps JSON :
+Le service appelle directement ces endpoints :
 
-```json
-{
-  "lines": "C26,70",
-  "directions": "",
-  "stop_ids": "2294,42561"
-}
+```text
+GET /tcl_sytral.tclpassagearret/all.json?ligne__in=C26,70&id__in=2294,42561
+GET /tcl_sytral.tclarret/all.json?id__in=2294,42561
 ```
 
-La réponse est un dictionnaire imbriqué :
+Le premier endpoint renvoie les passages (ligne, direction, heure, id d'arrêt) et le second permet de résoudre `id -> nom d'arrêt`.
+
+L'app reconstruit ensuite une structure métier :
 
 ```json
 {
