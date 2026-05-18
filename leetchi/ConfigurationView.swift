@@ -2,8 +2,8 @@ import SwiftUI
 import WidgetKit
 
 struct ConfigurationView: View {
-    @AppStorage(TCLConfiguration.keyServerURL, store: UserDefaults(suiteName: TCLConfiguration.appGroupID))
-    private var serverURL = TCLConfiguration.default.serverURL
+    @AppStorage(TCLConfiguration.keyGrandLyonBaseURL, store: UserDefaults(suiteName: TCLConfiguration.appGroupID))
+    private var grandLyonBaseURL = TCLConfiguration.default.grandLyonBaseURL
 
     @AppStorage(TCLConfiguration.keyLines, store: UserDefaults(suiteName: TCLConfiguration.appGroupID))
     private var lines = TCLConfiguration.default.lines
@@ -14,13 +14,28 @@ struct ConfigurationView: View {
     @AppStorage(TCLConfiguration.keyDirections, store: UserDefaults(suiteName: TCLConfiguration.appGroupID))
     private var directions = TCLConfiguration.default.directions
 
+    @AppStorage(TCLConfiguration.keyUsername, store: UserDefaults(suiteName: TCLConfiguration.appGroupID))
+    private var username = TCLConfiguration.default.username
+
+    @AppStorage(TCLConfiguration.keyPassword, store: UserDefaults(suiteName: TCLConfiguration.appGroupID))
+    private var password = TCLConfiguration.default.password
+
     @Environment(\.dismiss) private var dismiss
 
     var body: some View {
         NavigationStack {
             Form {
-                Section("Serveur Litchi") {
-                    TextField("URL du serveur", text: $serverURL)
+                Section("API Grand Lyon") {
+                    TextField("URL base datapusher", text: $grandLyonBaseURL)
+                        .keyboardType(.URL)
+                        .autocorrectionDisabled()
+                        .textInputAutocapitalization(.never)
+
+                    TextField("Utilisateur (optionnel)", text: $username)
+                        .autocorrectionDisabled()
+                        .textInputAutocapitalization(.never)
+
+                    SecureField("Mot de passe (optionnel)", text: $password)
                         .keyboardType(.URL)
                         .autocorrectionDisabled()
                         .textInputAutocapitalization(.never)

@@ -2,8 +2,8 @@ import SwiftUI
 import WidgetKit
 
 struct ContentView: View {
-    @AppStorage(TCLConfiguration.keyServerURL, store: UserDefaults(suiteName: TCLConfiguration.appGroupID))
-    private var serverURL = TCLConfiguration.default.serverURL
+    @AppStorage(TCLConfiguration.keyGrandLyonBaseURL, store: UserDefaults(suiteName: TCLConfiguration.appGroupID))
+    private var grandLyonBaseURL = TCLConfiguration.default.grandLyonBaseURL
 
     @AppStorage(TCLConfiguration.keyLines, store: UserDefaults(suiteName: TCLConfiguration.appGroupID))
     private var lines = TCLConfiguration.default.lines
@@ -14,13 +14,19 @@ struct ContentView: View {
     @AppStorage(TCLConfiguration.keyDirections, store: UserDefaults(suiteName: TCLConfiguration.appGroupID))
     private var directions = TCLConfiguration.default.directions
 
+    @AppStorage(TCLConfiguration.keyUsername, store: UserDefaults(suiteName: TCLConfiguration.appGroupID))
+    private var username = TCLConfiguration.default.username
+
+    @AppStorage(TCLConfiguration.keyPassword, store: UserDefaults(suiteName: TCLConfiguration.appGroupID))
+    private var password = TCLConfiguration.default.password
+
     @State private var tclData: TCLData = .empty
     @State private var isLoading = false
     @State private var errorMessage: String?
     @State private var showingConfig = false
 
     private var configuration: TCLConfiguration {
-        TCLConfiguration(serverURL: serverURL, lines: lines, stops: stops, directions: directions)
+        TCLConfiguration(grandLyonBaseURL: grandLyonBaseURL, username: username, password: password, lines: lines, stops: stops, directions: directions)
     }
 
     var body: some View {

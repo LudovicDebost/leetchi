@@ -1,15 +1,22 @@
 import Foundation
 
-// MARK: - API Models
+// MARK: - API Models (Grand Lyon Datapusher)
 
-struct TCLRefreshRequest: Encodable {
-    let lines: String
-    let directions: String
-    let stop_ids: String
+struct GrandLyonResponse<T: Decodable>: Decodable {
+    let values: [T]
 }
 
-// Response: line → stop_name → direction → [time]
-typealias TCLResponse = [String: [String: [String: [String]]]]
+struct GrandLyonPassage: Decodable {
+    let ligne: String
+    let direction: String
+    let heurepassage: String
+    let id: String
+}
+
+struct GrandLyonStop: Decodable {
+    let id: String
+    let nom: String
+}
 
 // MARK: - Domain Models
 
@@ -37,13 +44,17 @@ struct TCLData: Codable {
 // MARK: - Configuration
 
 struct TCLConfiguration: Codable, Equatable {
-    var serverURL: String
+    var grandLyonBaseURL: String
+    var username: String
+    var password: String
     var lines: String
     var stops: String
     var directions: String
 
     static let `default` = TCLConfiguration(
-        serverURL: "https://litchi.vqlion.fr",
+        grandLyonBaseURL: "https://data.grandlyon.com/fr/datapusher/ws/rdata/",
+        username: "",
+        password: "",
         lines: "C26,70",
         stops: "2294,42561",
         directions: ""
@@ -52,7 +63,9 @@ struct TCLConfiguration: Codable, Equatable {
     static let appGroupID = "group.fr.leetchi.shared"
 
     // UserDefaults keys
-    static let keyServerURL  = "serverURL"
+    static let keyGrandLyonBaseURL = "grandLyonBaseURL"
+    static let keyUsername = "grandLyonUsername"
+    static let keyPassword = "grandLyonPassword"
     static let keyLines      = "lines"
     static let keyStops      = "stops"
     static let keyDirections = "directions"
@@ -60,7 +73,9 @@ struct TCLConfiguration: Codable, Equatable {
     static func load() -> TCLConfiguration {
         let defaults = UserDefaults(suiteName: appGroupID) ?? .standard
         return TCLConfiguration(
-            serverURL:  defaults.string(forKey: keyServerURL)  ?? TCLConfiguration.default.serverURL,
+            grandLyonBaseURL: defaults.string(forKey: keyGrandLyonBaseURL) ?? TCLConfiguration.default.grandLyonBaseURL,
+            username: defaults.string(forKey: keyUsername) ?? TCLConfiguration.default.username,
+            password: defaults.string(forKey: keyPassword) ?? TCLConfiguration.default.password,
             lines:      defaults.string(forKey: keyLines)      ?? TCLConfiguration.default.lines,
             stops:      defaults.string(forKey: keyStops)      ?? TCLConfiguration.default.stops,
             directions: defaults.string(forKey: keyDirections) ?? TCLConfiguration.default.directions
@@ -69,7 +84,9 @@ struct TCLConfiguration: Codable, Equatable {
 
     func save() {
         let defaults = UserDefaults(suiteName: TCLConfiguration.appGroupID) ?? .standard
-        defaults.set(serverURL,  forKey: TCLConfiguration.keyServerURL)
+        defaults.set(grandLyonBaseURL, forKey: TCLConfiguration.keyGrandLyonBaseURL)
+        defaults.set(username, forKey: TCLConfiguration.keyUsername)
+        defaults.set(password, forKey: TCLConfiguration.keyPassword)
         defaults.set(lines,      forKey: TCLConfiguration.keyLines)
         defaults.set(stops,      forKey: TCLConfiguration.keyStops)
         defaults.set(directions, forKey: TCLConfiguration.keyDirections)
