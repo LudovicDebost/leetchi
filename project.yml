@@ -1,0 +1,61 @@
+name: leetchi
+
+options:
+  bundleIdPrefix: fr.leetchi
+  deploymentTarget:
+    iOS: "17.0"
+  xcodeVersion: "15"
+  indentWidth: 4
+  tabWidth: 4
+
+settings:
+  base:
+    SWIFT_VERSION: "5.9"
+    MARKETING_VERSION: "1.0"
+    CURRENT_PROJECT_VERSION: "1"
+    DEVELOPMENT_TEAM: ""
+
+targets:
+
+  # ──────────────────────────────────────────
+  # Main iOS application
+  # ──────────────────────────────────────────
+  leetchi:
+    type: application
+    platform: iOS
+    sources:
+      - path: Shared
+      - path: leetchi
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: fr.leetchi.app
+        INFOPLIST_FILE: leetchi/Info.plist
+        CODE_SIGN_ENTITLEMENTS: leetchi/leetchi.entitlements
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
+    entitlements:
+      path: leetchi/leetchi.entitlements
+    dependencies:
+      - target: leetchWidget
+        embed: true
+
+  # ──────────────────────────────────────────
+  # WidgetKit extension
+  # ──────────────────────────────────────────
+  leetchWidget:
+    type: app-extension
+    platform: iOS
+    sources:
+      - path: Shared
+      - path: leetchWidget
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: fr.leetchi.app.leetchWidget
+        INFOPLIST_FILE: leetchWidget/Info.plist
+        CODE_SIGN_ENTITLEMENTS: leetchWidget/leetchWidgetExtension.entitlements
+        ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
+    entitlements:
+      path: leetchWidget/leetchWidgetExtension.entitlements
+    dependencies:
+      - sdk: WidgetKit.framework
+      - sdk: SwiftUI.framework
